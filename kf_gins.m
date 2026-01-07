@@ -170,6 +170,7 @@ for imuindex = 2:size(imudata, 1)-1
     elseif (lastimu(1, 1) < gnssdata(gnssindex, 1) && thisimu(1, 1) > gnssdata(gnssindex, 1))
         % ineterpolate imu to gnss time
         [firstimu, secondimu] = interpolate(lastimu, thisimu, gnssdata(gnssindex, 1));
+        % NOTE：内插之后采样间隔会变化，严格上不满足INSMech的假设，但影响较小暂时忽略
         
         % do propagation for first imu
         imudt = firstimu(1, 1) - lastimu(1, 1);

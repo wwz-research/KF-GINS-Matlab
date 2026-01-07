@@ -36,8 +36,8 @@ function navstate = InsMech(laststate, lastimu, thisimu)
             -lastvel(1) / (rm + lastpos(3)); 
             -lastvel(2) * tan(lastpos(1)) / (rn + lastpos(3))];
 
-    % rotational and sculling motion
-    % 旋转效应和双子样划桨效应
+    % rotational and sculling motion (derived under uniform sampling)
+    % 旋转效应和双子样划桨效应 (基于相同采样间隔推导)
     temp1 = cross(this_dtheta, this_dvel) / 2;
     temp2 = cross(last_dtheta, this_dvel) / 12;
     temp3 = cross(last_dvel, this_dtheta) / 12;
@@ -142,6 +142,7 @@ function navstate = InsMech(laststate, lastimu, thisimu)
     qnn = rotvec2quat(temp);
 
     % b-frame rotation vector, 计算b系旋转四元数 补偿二阶圆锥误差
+    % derived under uniform sampling, 基于相同采样间隔推导
     temp = this_dtheta + cross(last_dtheta, this_dtheta) / 12;
     qbb = rotvec2quat(temp);
 
