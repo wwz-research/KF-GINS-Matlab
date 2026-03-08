@@ -24,18 +24,18 @@ function cfg = ProcessConfig()
     cfg.odoupdaterate = 1; % [Hz]
 
     %% initial information
-    cfg.starttime = 456300;
+    cfg.starttime = 456300;                                                 %%%%注意开始时间
     cfg.endtime = inf;
 
-    cfg.initpos = [30.4447873701; 114.4718632047; 20.899]; % [deg, deg, m]
+    cfg.initpos = [30.4447873701; 114.4718632047; 20.899]; % [deg, deg, m]  %%%%初值
     cfg.initvel = [0; 0; 0]; % [m/s]
     cfg.initatt = [0.854; -2.034; 185.702]; % [deg]
 
-    cfg.initposstd = [0.005; 0.004; 0.008]; %[m]
+    cfg.initposstd = [0.005; 0.004; 0.008]; %[m]                            %%%%标准差
     cfg.initvelstd = [0.003; 0.004; 0.004]; %[m/s]
     cfg.initattstd = [0.003; 0.003; 0.023]; %[deg]
 
-    cfg.initgyrbias = [0; 0; 0]; % [deg/h]
+    cfg.initgyrbias = [0; 0; 0]; % [deg/h]                                  %%%%初始传感器误差（常值、比例），注意在mems里会影响收敛速度
     cfg.initaccbias = [0; 0; 0]; % [mGal]
     cfg.initgyrscale = [0; 0; 0]; % [ppm]
     cfg.initaccscale = [0; 0; 0]; % [ppm]
@@ -45,17 +45,17 @@ function cfg = ProcessConfig()
     cfg.initgyrscalestd = [300; 300; 300]; % [ppm]
     cfg.initaccscalestd = [300; 300; 300]; % [ppm]
 
-    cfg.gyrarw = 0.003; % [deg/sqrt(h)]
+    cfg.gyrarw = 0.003; % [deg/sqrt(h)]，注意角速度和加速度单位               %%%%Q阵，对比不同等级IMU的设置！！！
     cfg.accvrw = 0.03; % [m/s/sqrt(h)]
     cfg.gyrbiasstd = 0.027; % [deg/h]
     cfg.accbiasstd = 15; % [mGal]
     cfg.gyrscalestd = 300; % [ppm]
     cfg.accscalestd = 300; % [ppm]
-    cfg.corrtime = 4; % [h]
+    cfg.corrtime = 4; % [h]                                                 %%%%相关时间，随着器件的变化而变化？这个参数用在哪里嘞
 
     %% install parameters 安装参数
     cfg.antlever = [0.136; -0.301; -0.184]; % [m]
-    cfg.odolever = [0; 0; 0]; %[m]
+    cfg.odolever = [0; 0; 0]; %[m] 里程计
     cfg.installangle = [0; 0; 0]; %[deg]
 
     %% ODO/NHC measurement noise 观测噪声

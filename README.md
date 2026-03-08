@@ -37,6 +37,19 @@ English version: “The authors would like to acknowledge the team of Prof. Xiao
 
 ## 1.KF-GINS-Maltab Files Overview
 
+### 1.1 This repository's extensions
+
+- **Based on**: this repository is a derivative work of the official `KF-GINS-Matlab` project from the i2Nav group of Wuhan University (see links above and `LICENSE`). It keeps the same **GPLv3** license and follows the original acknowledgment requirement in academic publications.
+- **New dataset and configuration**: adds `dataset5` and `ProcessConfig5.m` for a vehicle experiment with GNSS/INS loose integration, using binary IMU input (`IMU.bin`) and RTKLIB-style GNSS solution files (`*.pos`) parsed by `ReadBinaryIMU.m` and `ReadGNSSData.m`.
+- **ODO / NHC integration**: implements `GetOdoVel.m` and a unified `ODONHCUpdate.m` that supports 1D ODO, 2D NHC, and 3D ODO+NHC velocity updates. The EKF state is augmented to 22 dimensions to include an odometer scale-factor state, with corresponding covariance initialization and feedback logic in `Initialize.m` and `ErrorFeedback.m`.
+- **Zero-velocity / zero-yaw-rate updates (ZVT)**: adds `ZVTUpdate.m` and corresponding logic in `kf_gins.m` and `ProcessConfig5.m` to support configurable zero-velocity intervals and joint ZUPT/zero-yaw-rate updates. ZUPT and zero-yaw-rate innovations are logged to `ZuptInnov.txt` and `ZyrInnov.txt` for analysis.
+- **Angle-rate logging and post-processing**: logs body-frame angular rate \(\omega_{nb}^b\) to `Omega_nb_b.txt` inside the main loop for later diagnostics (e.g., lever-arm compensation in the vehicle frame). The plotting scripts under `plot-function/` are extended to visualize ODO/NHC/ZVT innovations, odometer scale-factor evolution, and multi-mode error comparisons.
+- **Sensitivity experiments**: provides scripts such as `exp_gyrbias_sensitivity.m` and `exp_gyrbias_processnoise.m` to study the impact of initial gyro bias covariance and gyro bias process noise on EKF convergence and steady-state performance using `dataset5`.
+
+If you use this repository, please **also cite the original KF-GINS/KF-GINS-Matlab papers and documentation**, and additionally mention that you are using an extended version that implements ODO/NHC/ZVT and sensitivity experiments on top of KF-GINS-Matlab.
+
+### 1.2 Original file overview
+
 | Filename                      | Description                                                        |
 | ----------------------------- | ------------------------------------------------------------------ |
 | kf_gins.m                     | Entry point; main loop of the algorithm                            |
@@ -117,6 +130,10 @@ KF-GINS-Matlab includes three test datasets with corresponding parameter configu
 |          | GNSS-POS.txt    | GNSS position file          |
 |          | ODO.txt         | ODO velocity file           |
 |          | truth.nav       | Reference truth file        |
+| dataset5 | IMU.bin         | Binary IMU file             |
+|          | GNSSsolution.pos / MOV_*.pos | GNSS solution files (RTK/PPP/SPP) used with `ReadGNSSData` |
+|          | ODO.txt (optional) | Odometer forward-velocity file (used when ODO/NHC is enabled) |
+|          | REF_NAV.nav     | High-accuracy reference navigation solution        |
 
 ### 3.2 Data Format
 

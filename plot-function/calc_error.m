@@ -10,8 +10,15 @@
 
 
 %% importdata data （nav文件第一列为0，不需要用）
-testnavpath = 'dataset1/NavResult.nav';
-truthpath = 'dataset1/truth.nav';
+% testnavpath = 'dataset5/ins_gnss/NavResult.nav';
+% testnavpath = 'dataset5/ins_gnss/NavResult_GNSSVEL.nav';
+testnavpath = 'dataset5/ins_gnss_nhc/NavResult_GNSSVEL.nav';
+% testnavpath = 'dataset5/ins_gnss_odo/NavResult_GNSSVEL.nav';
+% testnavpath = 'dataset5/ins_gnss_odo_nhc/NavResult_GNSSVEL.nav';
+% testnavpath = 'dataset5/ins_gnss_odo_nhc_zvt/NavResult_GNSSVEL.nav';
+truthpath = 'dataset5/REF_NAV.nav';
+% testnavpath = 'dataset4/NavResult.nav';
+% truthpath = 'dataset4/ref_out.nav';
 temp = importdata(testnavpath);
 result_all = temp(:, 2:end);
 temp=importdata(truthpath);
@@ -70,14 +77,30 @@ error(: ,1) = time;
 
 newresult(:, 2:10) = interp1(result_all(:, 1), result_all(:, 2:10), time);
 newref(:, 2:10) = interp1(ref(:, 1), ref(:, 2:10), time);
+
+% 归一化航向角到[-180, 180]度范围，确保计算误差前角度范围一致
+% 航向角在第10列（索引10）
+for i = 1:size(newresult, 1)
+    % 归一化结果航向角到[-180, 180]度范围
+    while newresult(i, 10) > 180
+        newresult(i, 10) = newresult(i, 10) - 360;
+    end
+    
+    % 归一化参考航向角到[-180, 180]度范围
+    while newref(i, 10) > 180
+        newref(i, 10) = newref(i, 10) - 360;
+    end
+end
+
+% 计算误差
 error(:, 2:10) = newresult(:, 2:10) - newref(:, 2:10);
 
-% check heading error, 航向角误差处理
+% 归一化航向角误差到[-180, 180]度范围
 for i = 1:size(error, 1)
-    if error(i, 10) > 180
+    while error(i, 10) > 180
         error(i, 10) = error(i, 10) - 360;
     end
-    if error(i, 10) < -180
+    while error(i, 10) < -180
         error(i, 10) = error(i, 10) + 360;
     end
 end

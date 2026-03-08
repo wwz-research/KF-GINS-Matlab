@@ -6,6 +6,9 @@
 %  Author : Liqiang Wang
 % Contact : wlq@whu.edu.cn
 %    Date : 2023.3.3
+%
+%    MOD  : 在原有捷联解算基础上，增加对 ODO 比例因子 navstate.odoscale 的保持，
+%           为 ODO/NHC/ZVT 扩展状态提供一致的导航状态输入（Weizhen Wang, 2026）
 % -------------------------------------------------------------------------
 
 function navstate = InsMech(laststate, lastimu, thisimu)
@@ -36,8 +39,8 @@ function navstate = InsMech(laststate, lastimu, thisimu)
             -lastvel(1) / (rm + lastpos(3)); 
             -lastvel(2) * tan(lastpos(1)) / (rn + lastpos(3))];
 
-    % rotational and sculling motion (derived under uniform sampling)
-    % 旋转效应和双子样划桨效应 (基于相同采样间隔推导)
+    % rotational and sculling motion
+    % 旋转效应和双子样划桨效应
     temp1 = cross(this_dtheta, this_dvel) / 2;
     temp2 = cross(last_dtheta, this_dvel) / 12;
     temp3 = cross(last_dvel, this_dtheta) / 12;
@@ -119,13 +122,9 @@ function navstate = InsMech(laststate, lastimu, thisimu)
     midvel = (lastvel + thisvel) / 2;
     last_qne = bl2qne(lastpos(1), lastpos(2));
     this_qne = bl2qne(thispos(1), thispos(2));
-    temp = [0; 0; -param.WGS84_WIE * this_dt];
-    qee = rotvec2quat(temp);
-    delta_qnn = quatProd(quatProd(quatInv(last_qne), quatInv(qee)), this_qne);
-    temp = [0; 0; -param.WGS84_WIE * this_dt / 2];
-    qee = rotvec2quat(temp);
+    delta_qnn = quatProd(quatInv(this_qne), last_qne);
     temp = quat2rotvec(delta_qnn);
-    qne_mid = quatProd(quatProd(qee, last_qne), rotvec2quat(temp / 2));
+    qne_mid = quatProd(last_qne, rotvec2quat(temp / 2));
     [midlat, matlon] = qne2bl(qne_mid);
     midheight = (lastpos(3) + thispos(3)) / 2;
     midpos = [midlat; matlon; midheight];
@@ -142,7 +141,6 @@ function navstate = InsMech(laststate, lastimu, thisimu)
     qnn = rotvec2quat(temp);
 
     % b-frame rotation vector, 计算b系旋转四元数 补偿二阶圆锥误差
-    % derived under uniform sampling, 基于相同采样间隔推导
     temp = this_dtheta + cross(last_dtheta, this_dtheta) / 12;
     qbb = rotvec2quat(temp);
 
@@ -170,4 +168,5 @@ function navstate = InsMech(laststate, lastimu, thisimu)
     navstate.accbias = laststate.accbias;
     navstate.gyrscale = laststate.gyrscale;
     navstate.accscale = laststate.accscale;
+    navstate.odoscale = laststate.odoscale;
 end

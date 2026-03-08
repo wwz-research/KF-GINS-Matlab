@@ -6,6 +6,9 @@
 %  Author : Liqiang Wang
 % Contact : wlq@whu.edu.cn
 %    Date : 2023.3.3
+%
+%    MOD  : 适配扩展后的 22 维状态，保持 F、G、Qc 结构不变的前提下，支持
+%           ODO 比例因子扩展状态的协方差传播（Weizhen Wang, 2026）
 % -------------------------------------------------------------------------
 
 function kf = InsPropagate(navstate, thisimu, dt, kf, corrtime)

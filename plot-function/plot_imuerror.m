@@ -9,7 +9,7 @@
 % -------------------------------------------------------------------------
 
 %% importdata imuerror
-imuerrorfile = 'dataset1/ImuError.txt';
+imuerrorfile = 'dataset5/ins_gnss/ImuError.txt';
 err = importdata(imuerrorfile);
 
 figure()

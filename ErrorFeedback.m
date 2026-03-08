@@ -1,3 +1,4 @@
+
 % -------------------------------------------------------------------------
 % KF-GINS-Matlab: An EKF-based GNSS/INS Integrated Navigation System in Matlab
 %
@@ -6,6 +7,9 @@
 %  Author : Liqiang Wang
 % Contact : wlq@whu.edu.cn
 %    Date : 2023.3.3
+%
+%    MOD  : 在误差反馈中增加对里程计比例因子 navstate.odoscale 的更新，
+%           支持 ODO/NHC/ZVT 等扩展状态的统一误差反馈与状态重置（Weizhen Wang, 2026）
 % -------------------------------------------------------------------------
 
 function [kf, navstate] = ErrorFeedback(kf, navstate)
@@ -27,6 +31,9 @@ function [kf, navstate] = ErrorFeedback(kf, navstate)
     navstate.accbias = navstate.accbias + kf.x(13:15, 1);
     navstate.gyrscale = navstate.gyrscale + kf.x(16:18, 1);
     navstate.accscale = navstate.accscale + kf.x(19:21, 1);
+    if kf.RANK >= 22
+        navstate.odoscale = navstate.odoscale - kf.x(22, 1);
+    end
 
     % update some parameters
     param = Param();

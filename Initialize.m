@@ -6,12 +6,15 @@
 %  Author : Liqiang Wang
 % Contact : wlq@whu.edu.cn
 %    Date : 2023.3.3
+%
+%    MOD  : 扩展状态维度到 22，增加里程计比例因子状态，并根据 cfg 中的
+%           ODO/NHC/ZVT 配置初始化对应的协方差和导航状态（Weizhen Wang, 2026）
 % -------------------------------------------------------------------------
 
 function [kf, navstate] = Initialize(cfg)
     
     % kalman parameters initialization
-    kf.RANK = 21;
+    kf.RANK = 22;            % 增广：增加1个里程计比例因子状态
     kf.NOISE_RANK = 18;
     kf.P = zeros(kf.RANK, kf.RANK);
     kf.Qc = zeros(kf.NOISE_RANK, kf.NOISE_RANK);
@@ -33,6 +36,8 @@ function [kf, navstate] = Initialize(cfg)
     kf.P(13:15, 13:15) = diag(power(cfg.initaccbiasstd, 2));
     kf.P(16:18, 16:18) = diag(power(cfg.initgyrscalestd, 2));
     kf.P(19:21, 19:21) = diag(power(cfg.initaccscalestd, 2));
+    % 里程计比例因子
+    kf.P(22, 22) = power(cfg.initodoscalestd, 2);
 
     % navigation state initialization
     navstate.time = cfg.starttime;
@@ -45,6 +50,7 @@ function [kf, navstate] = Initialize(cfg)
     navstate.accbias = cfg.initaccbias;
     navstate.gyrscale = cfg.initgyrscale;
     navstate.accscale = cfg.initaccscale;
+    navstate.odoscale = cfg.initodoscale;
     param = Param();
     [navstate.Rm, navstate.Rn] = getRmRn(cfg.initpos(1), param);
     navstate.gravity = getGravity(cfg.initpos);

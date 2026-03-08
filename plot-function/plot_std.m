@@ -10,7 +10,7 @@
 
 
 %% importdata std
-stdfile = 'dataset1/NavSTD.txt';
+stdfile = 'dataset5/ins_gnss/NavSTD.txt';
 std = importdata(stdfile);
 
 figure()
