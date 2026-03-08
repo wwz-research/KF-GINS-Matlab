@@ -8,6 +8,8 @@
 
 As a classic loosely coupled GNSS/INS integrated navigation algorithm, [KF-GINS](https://github.com/i2Nav-WHU/KF-GINS) is suitable for beginners to learn and understand integrated navigation. However, the C++ implementation of KF-GINS still makes debugging, modification, and extension challenging for newcomers. Therefore, we open-source a Matlab-based integrated navigation software, KF-GINS-Matlab, which serves as the Matlab version of KF-GINS. This version is more suited for teaching, experiments, and beginners. In addition to replicating KF-GINS in Matlab, KF-GINS-Matlab incorporates a GNSS velocity update algorithm and a framework for ODO/NHC updates (Note: the ODO/NHC measurement update is not fully implemented, and ODO scale factor error is not augmented. You are encouraged to complete the algorithms based on the documentation as a learning exercise).
 
+For a concise description of the extended experiments and results in this repository, please refer to the project report: [`项目实验报告.pdf`](./项目实验报告.pdf).
+
 **Origanization:** [Integrated and Intelligent Navigation (i2Nav) Group](http://www.i2nav.com/), GNSS Research Center, Wuhan University.
 
 **Related Reference:**
